@@ -30,98 +30,139 @@ class _LoginState extends State<Login> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: 50),
-                Icon(
-                  Icons.vpn_key,
-                  size: 100,
-                  color: Colors.blue,
-                ),
-                SizedBox(height: 50),
-                Text(
-                  'Welcome Back!',
-                  style: TextStyle(color: Colors.black, fontSize: 30),
-                ),
-                SizedBox(height: 25),
-                Mytextfield(
-                  controller: emailcontroller,
-                  hintText: 'Email Address',
-                  obscureText: false,
-                ),
-                SizedBox(height: 10),
-                Mytextfield(
-                  controller: passwordcontroller,
-                  hintText: 'Password',
-                  obscureText: true,
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Forgot Password ?',
-                      style: TextStyle(
-                        color: Colors.blue,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 50),
+                  Icon(
+                    Icons.vpn_key,
+                    size: 100,
+                    color: Colors.blue,
+                  ),
+                  SizedBox(height: 50),
+                  Text(
+                    'Welcome Back!',
+                    style: TextStyle(color: Colors.black, fontSize: 30),
+                  ),
+                  SizedBox(height: 50),
+                  TextFormField(
+                    controller: emailcontroller,
+                    decoration: InputDecoration(
+                      labelText: 'Email Address',
+                      hintText: 'Enter your email address',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.blueAccent,
+                          width: 2,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelStyle: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blueAccent,
                       ),
                     ),
-                    SizedBox(width: 10),
-                  ],
-                ),
-                SizedBox(height: 25),
-                ElevatedButton(
-                  onPressed: () async {
-                    await _authenticationController.login(
-                      email: emailcontroller.text.trim(),
-                      password: passwordcontroller.text.trim(),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(25),
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    obscureText: false,
                   ),
-                  child: Center(
-                    child: Obx(() {
-                      return _authenticationController.isLoading.value
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
-                          : Text(
-                              "Sign in",
-                              style: TextStyle(
+                  SizedBox(height: 25),
+                  TextFormField(
+                    controller: passwordcontroller,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      hintText: 'Enter your password',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.blueAccent,
+                          width: 2,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelStyle: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    obscureText: true,
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Forgot Password ?',
+                        style: TextStyle(
+                          color: Colors.blue,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                    ],
+                  ),
+                  SizedBox(height: 40),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _authenticationController.login(
+                        email: emailcontroller.text.trim(),
+                        password: passwordcontroller.text.trim(),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(25),
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Center(
+                      child: Obx(() {
+                        return _authenticationController.isLoading.value
+                            ? const CircularProgressIndicator(
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            );
-                    }),
+                              )
+                            : Text(
+                                "Sign in",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              );
+                      }),
+                    ),
                   ),
-                ),
-                SizedBox(height: 25),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Don\'t have an account ?',
-                      style: TextStyle(
-                        color: Colors.black,
+                  SizedBox(height: 25),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Don\'t have an account ?',
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    GestureDetector(
-                      onTap: navigateToSignUp,
-                      child: Text(
-                        'Register Here',
-                        style: TextStyle(color: Colors.blue),
+                      SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: navigateToSignUp,
+                        child: Text(
+                          'Register Here',
+                          style: TextStyle(color: Colors.blue),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
