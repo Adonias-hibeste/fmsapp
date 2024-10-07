@@ -5,6 +5,7 @@ import 'package:membermanagementsystem/pages/blogs.dart';
 import 'package:membermanagementsystem/pages/events.dart';
 import 'package:membermanagementsystem/pages/news.dart';
 import 'package:membermanagementsystem/pages/payments.dart';
+import 'package:membermanagementsystem/pages/store.dart';
 
 class EventRegistrationPage extends StatefulWidget {
   @override
@@ -40,6 +41,12 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
         );
         break;
       case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Store()),
+        );
+        break;
+      case 4:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PaymentFormPage()),
@@ -160,34 +167,42 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        unselectedItemColor: Colors.black,
-        selectedItemColor: Colors.black,
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: true,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(5.0), // Adjust the padding as needed
+        child: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          unselectedItemColor: Colors.black,
+          selectedItemColor: Colors
+              .black, // Ensure selected item color is the same as unselected
+          type: BottomNavigationBarType.fixed,
+          showUnselectedLabels: true,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.event),
+              label: 'Events',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.article),
+              label: 'News',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.store),
+              label: 'Store',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.payment),
+              label: 'Payment',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          selectedIconTheme: IconThemeData(
+            color: Colors.black,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.article),
-            label: 'News',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.payment),
-            label: 'Payment',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedIconTheme: IconThemeData(
-          color: Colors.black, //
         ),
       ),
     );

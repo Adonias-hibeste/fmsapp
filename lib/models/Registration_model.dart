@@ -1,27 +1,25 @@
 class RegistrationData {
-  String name;
+  String full_name;
   String email;
   String password;
-  String fullAddress;
-  String dob;
-  String placeOfBirth;
-  String image;
-  String nationality;
+  String address;
+  String age;
   String gender;
   String phoneNumber;
-  String membershipType;
+  String membership;
 
   RegistrationData({
-    this.name = '',
+    this.full_name = '',
     this.email = '',
     this.password = '',
-    this.fullAddress = '',
-    this.dob = '',
-    this.placeOfBirth = '',
-    this.image = '',
-    this.nationality = '',
+    this.address = '',
+    this.age = '',
     this.gender = '',
     this.phoneNumber = '',
-    this.membershipType = '',
+    this.membership = '',
   });
+  @override
+  String toString() {
+    return 'RegistrationData{full_name: $full_name, email: $email, password: $password, fullAddress: $address, age: $age, gender: $gender, phoneNumber: $phoneNumber, membershipId: $membership}';
+  }
 }

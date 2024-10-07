@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:membermanagementsystem/controllers/auth_service.dart';
+import 'package:membermanagementsystem/controllers/logout.dart';
 import 'package:membermanagementsystem/models/eventspost.dart';
 import 'package:flutter/material.dart';
 import 'package:http/io_client.dart';
@@ -14,6 +14,7 @@ import 'dart:convert';
 import 'package:membermanagementsystem/pages/eventreg.dart';
 import 'package:membermanagementsystem/pages/news.dart';
 import 'package:membermanagementsystem/pages/payments.dart';
+import 'package:membermanagementsystem/pages/store.dart';
 
 class Events extends StatefulWidget {
   const Events({super.key});
@@ -50,6 +51,12 @@ class _EventsState extends State<Events> {
         );
         break;
       case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Store()),
+        );
+        break;
+      case 4:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PaymentFormPage()),
@@ -107,29 +114,13 @@ class _EventsState extends State<Events> {
           ),
         ),
         actions: [
-          PopupMenuButton<String>(
-            icon: Icon(Icons.settings, color: Colors.white),
-            color: Colors.white,
-            onSelected: (value) {
-              if (value == 'logout') {
-                AuthService.logout().then((_) {
-                  Get.offAllNamed('/Login');
-                });
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem<String>(
-                  value: 'logout',
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Logout', style: TextStyle(color: Colors.black)),
-                    ],
-                  ),
-                ),
-              ];
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Get.toNamed('/Settings');
             },
           ),
         ],
@@ -157,40 +148,42 @@ class _EventsState extends State<Events> {
           }
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        unselectedItemColor: Colors.black,
-        selectedItemColor: Colors
-            .black, // Ensure selected item color is the same as unselected
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: true,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(5.0), // Adjust the padding as needed
+        child: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          unselectedItemColor: Colors.black,
+          selectedItemColor: Colors
+              .black, // Ensure selected item color is the same as unselected
+          type: BottomNavigationBarType.fixed,
+          showUnselectedLabels: true,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.event,
+            BottomNavigationBarItem(
+              icon: Icon(Icons.event),
+              label: 'Events',
             ),
-            label: 'Events',
+            BottomNavigationBarItem(
+              icon: Icon(Icons.article),
+              label: 'News',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.store),
+              label: 'Store',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.payment),
+              label: 'Payment',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          selectedIconTheme: IconThemeData(
+            color: Colors.black,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.article),
-            label: 'News',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.payment),
-            label: 'Payment',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedIconTheme: IconThemeData(
-          color:
-              Colors.black, // Ensure the selected icon color remains the same
         ),
       ),
     );
@@ -250,6 +243,7 @@ class EventsPostWidget extends StatelessWidget {
         );
       },
       child: Card(
+        color: Color(0xFFEFEFEF),
         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -422,6 +416,7 @@ class EventsDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFEFEFEF),
       appBar: AppBar(
         backgroundColor: Color(0xFF003049),
         title: Text(
@@ -480,7 +475,7 @@ class EventsDetailPage extends StatelessWidget {
                     Get.to(() => EventRegistrationPage());
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey, // Blue color
+                    backgroundColor: Color(0xFF003049), // Blue color
                   ),
                   child: Text(
                     'Register',

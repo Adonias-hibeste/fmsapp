@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:membermanagementsystem/controllers/auth_service.dart';
+import 'package:membermanagementsystem/controllers/logout.dart';
 import 'package:membermanagementsystem/pages/blogs.dart';
 import 'package:membermanagementsystem/pages/events.dart';
 import 'package:membermanagementsystem/pages/news.dart';
+import 'package:membermanagementsystem/pages/store.dart';
 
 class PaymentFormPage extends StatefulWidget {
   @override
@@ -40,6 +41,12 @@ class _PaymentFormPageState extends State<PaymentFormPage> {
       case 3:
         Navigator.push(
           context,
+          MaterialPageRoute(builder: (context) => Store()),
+        );
+        break;
+      case 4:
+        Navigator.push(
+          context,
           MaterialPageRoute(builder: (context) => PaymentFormPage()),
         );
         break;
@@ -52,7 +59,7 @@ class _PaymentFormPageState extends State<PaymentFormPage> {
       appBar: AppBar(
         backgroundColor: Color(0xFF003049),
         title: Text(
-          "Payment Form",
+          "Membership Payment",
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -66,29 +73,13 @@ class _PaymentFormPageState extends State<PaymentFormPage> {
           ),
         ),
         actions: [
-          PopupMenuButton<String>(
-            icon: Icon(Icons.settings, color: Colors.white),
-            color: Colors.white,
-            onSelected: (value) {
-              if (value == 'logout') {
-                AuthService.logout().then((_) {
-                  Get.offAllNamed('/Login');
-                });
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem<String>(
-                  value: 'logout',
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Logout', style: TextStyle(color: Colors.black)),
-                    ],
-                  ),
-                ),
-              ];
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Get.toNamed('/Settings');
             },
           ),
         ],
@@ -177,7 +168,7 @@ class _PaymentFormPageState extends State<PaymentFormPage> {
                     // Handle payment submission
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Color(0xFF003049),
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     textStyle: TextStyle(
                       fontSize: 18,
@@ -194,40 +185,42 @@ class _PaymentFormPageState extends State<PaymentFormPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        unselectedItemColor: Colors.black,
-        selectedItemColor: Colors
-            .black, // Ensure selected item color is the same as unselected
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: true,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(5.0), // Adjust the padding as needed
+        child: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          unselectedItemColor: Colors.black,
+          selectedItemColor: Colors
+              .black, // Ensure selected item color is the same as unselected
+          type: BottomNavigationBarType.fixed,
+          showUnselectedLabels: true,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.event,
+            BottomNavigationBarItem(
+              icon: Icon(Icons.event),
+              label: 'Events',
             ),
-            label: 'Events',
+            BottomNavigationBarItem(
+              icon: Icon(Icons.article),
+              label: 'News',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.store),
+              label: 'Store',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.payment),
+              label: 'Payment',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          selectedIconTheme: IconThemeData(
+            color: Colors.black,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.article),
-            label: 'News',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.payment),
-            label: 'Payment',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedIconTheme: IconThemeData(
-          color:
-              Colors.black, // Ensure the selected icon color remains the same
         ),
       ),
     );

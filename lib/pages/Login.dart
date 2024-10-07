@@ -26,7 +26,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade300,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
@@ -39,12 +39,12 @@ class _LoginState extends State<Login> {
                   Icon(
                     Icons.vpn_key,
                     size: 100,
-                    color: Colors.blue,
+                    color: Color(0xFF003049),
                   ),
                   SizedBox(height: 50),
                   Text(
                     'Welcome Back!',
-                    style: TextStyle(color: Colors.black, fontSize: 30),
+                    style: TextStyle(color: Color(0xFF003049), fontSize: 30),
                   ),
                   SizedBox(height: 50),
                   TextFormField(
@@ -57,21 +57,21 @@ class _LoginState extends State<Login> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(
-                          color: Colors.blueAccent,
+                          color: Color(0xFF003049),
                           width: 2,
                         ),
                       ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.grey.shade100,
                       labelStyle: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
-                        color: Colors.blueAccent,
+                        color: Color(0xFF003049),
                       ),
                     ),
                     obscureText: false,
                   ),
-                  SizedBox(height: 25),
+                  SizedBox(height: 15),
                   TextFormField(
                     controller: passwordcontroller,
                     decoration: InputDecoration(
@@ -82,16 +82,16 @@ class _LoginState extends State<Login> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(
-                          color: Colors.blueAccent,
+                          color: Color(0xFF003049),
                           width: 2,
                         ),
                       ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.grey.shade100,
                       labelStyle: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
-                        color: Colors.blueAccent,
+                        color: Color(0xFF003049),
                       ),
                     ),
                     obscureText: true,
@@ -103,7 +103,7 @@ class _LoginState extends State<Login> {
                       Text(
                         'Forgot Password ?',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.blueGrey.shade500,
                         ),
                       ),
                       SizedBox(width: 10),
@@ -119,7 +119,7 @@ class _LoginState extends State<Login> {
                     },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.all(25),
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Color(0xFF003049),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -148,7 +148,7 @@ class _LoginState extends State<Login> {
                       Text(
                         'Don\'t have an account ?',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: Color(0xFF003049),
                         ),
                       ),
                       SizedBox(width: 10),
@@ -156,7 +156,7 @@ class _LoginState extends State<Login> {
                         onTap: navigateToSignUp,
                         child: Text(
                           'Register Here',
-                          style: TextStyle(color: Colors.blue),
+                          style: TextStyle(color: Colors.blueGrey.shade500),
                         ),
                       ),
                     ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:membermanagementsystem/controllers/auth_service.dart';
+import 'package:membermanagementsystem/controllers/logout.dart';
 import 'package:membermanagementsystem/models/Newspost.dart';
 import 'dart:io';
 
@@ -14,6 +14,7 @@ import 'dart:convert';
 import 'package:membermanagementsystem/pages/blogs.dart';
 import 'package:membermanagementsystem/pages/events.dart';
 import 'package:membermanagementsystem/pages/payments.dart';
+import 'package:membermanagementsystem/pages/store.dart';
 
 class News extends StatefulWidget {
   const News({super.key});
@@ -50,6 +51,12 @@ class _NewsState extends State<News> {
         );
         break;
       case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Store()),
+        );
+        break;
+      case 4:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PaymentFormPage()),
@@ -105,29 +112,13 @@ class _NewsState extends State<News> {
           ),
         ),
         actions: [
-          PopupMenuButton<String>(
-            icon: Icon(Icons.settings, color: Colors.white),
-            color: Colors.white,
-            onSelected: (value) {
-              if (value == 'logout') {
-                AuthService.logout().then((_) {
-                  Get.offAllNamed('/Login');
-                });
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem<String>(
-                  value: 'logout',
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Logout', style: TextStyle(color: Colors.black)),
-                    ],
-                  ),
-                ),
-              ];
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Get.toNamed('/Settings');
             },
           ),
         ],
@@ -155,40 +146,42 @@ class _NewsState extends State<News> {
           }
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        unselectedItemColor: Colors.black,
-        selectedItemColor: Colors
-            .black, // Ensure selected item color is the same as unselected
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: true,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(5.0), // Adjust the padding as needed
+        child: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          unselectedItemColor: Colors.black,
+          selectedItemColor: Colors
+              .black, // Ensure selected item color is the same as unselected
+          type: BottomNavigationBarType.fixed,
+          showUnselectedLabels: true,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.event,
+            BottomNavigationBarItem(
+              icon: Icon(Icons.event),
+              label: 'Events',
             ),
-            label: 'Events',
+            BottomNavigationBarItem(
+              icon: Icon(Icons.article),
+              label: 'News',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.store),
+              label: 'Store',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.payment),
+              label: 'Payment',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          selectedIconTheme: IconThemeData(
+            color: Colors.black,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.article),
-            label: 'News',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.payment),
-            label: 'Payment',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedIconTheme: IconThemeData(
-          color:
-              Colors.black, // Ensure the selected icon color remains the same
         ),
       ),
     );
@@ -248,6 +241,7 @@ class NewsPostWidget extends StatelessWidget {
         );
       },
       child: Card(
+        color: Color(0xFFEFEFEF),
         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -414,6 +408,7 @@ class NewsDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFEFEFEF),
       appBar: AppBar(
         backgroundColor: Color(0xFF003049),
         title: Text(
