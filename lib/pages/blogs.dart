@@ -312,12 +312,13 @@ class BlogPostWidget extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
                 child: AspectRatio(
-                  aspectRatio: 20 / 20, // Adjust the aspect ratio as needed
+                  aspectRatio: 1, // 1:1 aspect ratio for a square image
                   child: Image.network(
                     imageUrl!,
                     width: double.infinity,
-                    fit: BoxFit
-                        .cover, // Use BoxFit.cover to ensure the image covers the container
+                    height: 200,
+                    fit: BoxFit.fill, // Set a fixed height for the image
+                    // Ensure the image covers the container
                   ),
                 ),
               ),

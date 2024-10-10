@@ -100,7 +100,7 @@ class _EventsState extends State<Events> {
       appBar: AppBar(
         backgroundColor: Color(0xFF003049),
         title: Text(
-          "Upcoming for you",
+          "Events",
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -257,12 +257,10 @@ class EventsPostWidget extends StatelessWidget {
                 borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
                 child: AspectRatio(
                   aspectRatio: 20 / 20, // Adjust the aspect ratio as needed
-                  child: Image.network(
-                    imageUrl!,
-                    width: double.infinity,
-                    fit: BoxFit
-                        .cover, // Use BoxFit.cover to ensure the image covers the container
-                  ),
+                  child: Image.network(imageUrl!,
+                      width: double.infinity, fit: BoxFit.fill
+                      // Use BoxFit.cover to ensure the image covers the container
+                      ),
                 ),
               ),
             Padding(

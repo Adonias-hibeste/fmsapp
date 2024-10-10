@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:membermanagementsystem/controllers/logout.dart';
+import 'package:membermanagementsystem/controllers/Themeservice.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color(0xFF003049),
         title: Text(
@@ -20,68 +21,136 @@ class SettingsPage extends StatelessWidget {
         ),
       ),
       body: ListView(
-        children: [
-          SizedBox(
-            height: 20,
-          ),
-          ListTile(
-            leading: Icon(Icons.person),
-            title: Text('Profile Settings'),
+        padding: EdgeInsets.all(16.0),
+        children: <Widget>[
+          _buildSectionTitle('App Settings'),
+          _buildListTile(
+            icon: Icons.person,
+            title: 'Update Profile',
             onTap: () {
-              // Navigate to Profile Settings
+              Get.toNamed('/Updateprofile');
             },
           ),
-          ListTile(
-            leading: Icon(Icons.lock),
-            title: Text('Account Settings'),
-            onTap: () {
-              // Navigate to Account Settings
+          GetBuilder<ThemeController>(
+            builder: (themeController) {
+              return _buildSwitchTile(
+                icon: Icons.brightness_6,
+                title: 'Enable Dark Mode',
+                value: themeController.isDarkMode,
+                onChanged: (bool value) {
+                  themeController.switchTheme();
+                },
+              );
             },
           ),
-          ListTile(
-            leading: Icon(Icons.notifications),
-            title: Text('Notification Settings'),
+          Divider(),
+          _buildSectionTitle('Help'),
+          _buildListTile(
+            icon: Icons.support,
+            title: 'Support',
             onTap: () {
-              // Navigate to Notification Settings
+              // Handle support
             },
           ),
-          ListTile(
-            leading: Icon(Icons.palette),
-            title: Text('App Preferences'),
+          Divider(),
+          _buildSectionTitle('App Info'),
+          _buildListTile(
+            icon: Icons.info,
+            title: 'Build Version',
+            subtitle: 'V 1.0.0',
             onTap: () {
-              // Navigate to App Preferences
+              // Handle delete account
             },
           ),
-          ListTile(
-            leading: Icon(Icons.support),
-            title: Text('Support and Feedback'),
+          Divider(),
+          _buildSectionTitle('Account Settings'),
+          _buildListTile(
+            icon: Icons.delete,
+            title: 'Delete Account',
+            iconColor: Colors.red,
+            textColor: Colors.red,
             onTap: () {
-              // Navigate to Support and Feedback
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.info),
-            title: Text('About'),
-            onTap: () {
-              // Navigate to About
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.logout,
-              color: Colors.red,
-            ),
-            title: Text(
-              'Logout',
-              style: TextStyle(color: Colors.red),
-            ),
-            onTap: () {
-              AuthService.logout().then((_) {
-                Get.offAllNamed('/Login');
-              });
+              // Handle delete account
             },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        title,
+        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildListTile({
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    Color? iconColor,
+    Color? textColor,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 2,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ListTile(
+          leading: Icon(icon, color: iconColor ?? Colors.black),
+          title:
+              Text(title, style: TextStyle(color: textColor ?? Colors.black)),
+          subtitle: subtitle != null ? Text(subtitle) : null,
+          onTap: onTap,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSwitchTile({
+    required IconData icon,
+    required String title,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 2,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ListTile(
+          leading: Icon(icon),
+          title: Text(title),
+          trailing: Switch(
+            value: value,
+            onChanged: onChanged,
+          ),
+        ),
       ),
     );
   }

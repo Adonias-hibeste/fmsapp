@@ -1,11 +1,24 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:membermanagementsystem/constants/constants.dart';
+import 'package:membermanagementsystem/controllers/Apiservice.dart';
+import 'package:membermanagementsystem/controllers/CartController.dart';
 import 'package:membermanagementsystem/controllers/logout.dart';
+import 'package:membermanagementsystem/models/category.dart';
+import 'package:membermanagementsystem/models/product.dart';
 import 'package:membermanagementsystem/pages/blogs.dart';
 import 'package:membermanagementsystem/pages/events.dart';
 import 'package:membermanagementsystem/pages/news.dart';
+import 'package:membermanagementsystem/pages/order.dart';
 import 'package:membermanagementsystem/pages/payments.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Store extends StatefulWidget {
   @override
@@ -13,78 +26,69 @@ class Store extends StatefulWidget {
 }
 
 class _StoreState extends State<Store> {
-  List<Map<String, String>> items = [];
+  List<Category> categories = [];
+  List<Product> products = [];
   int _selectedIndex = 0;
+  final CartController cartController = Get.put(CartController());
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    ApiService apiService = ApiService();
+    categories = await apiService.fetchCategories();
+    products = await apiService.fetchProducts();
+    setState(() {});
+  }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
 
+    void _setStatusBarColor() {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF003049), // Set the status bar color
+        statusBarIconBrightness:
+            Brightness.light, // Set the status bar icon color
+      ));
+    }
+
     switch (index) {
       case 0:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Blogs()),
-        );
+        ).then((_) => _setStatusBarColor());
         break;
       case 1:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Events()),
-        );
+        ).then((_) => _setStatusBarColor());
         break;
       case 2:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => News()),
-        );
+        ).then((_) => _setStatusBarColor());
         break;
       case 3:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Store()),
-        );
+        ).then((_) => _setStatusBarColor());
         break;
       case 4:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PaymentFormPage()),
-        );
+        ).then((_) => _setStatusBarColor());
         break;
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // Fetch data from backend and update items
-    fetchData();
-  }
-
-  void fetchData() async {
-    // Simulate fetching data from backend
-    await Future.delayed(Duration(seconds: 1));
-    if (!mounted) return; // Check if the widget is still mounted
-    setState(() {
-      items = [
-        {
-          'image': 'lib/images/1.jpg',
-          'name': 'Shirt',
-          'price': '\$29.99',
-        },
-        {
-          'image': 'lib/images/1.jpg',
-          'name': 'Shoes',
-          'price': '\$49.99',
-        },
-        {
-          'image': 'lib/images/1.jpg',
-          'name': 'Accessory',
-          'price': '\$9.99',
-        },
-      ];
-    });
   }
 
   @override
@@ -120,41 +124,59 @@ class _StoreState extends State<Store> {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Obx(() {
+                return badges.Badge(
+                  position: badges.BadgePosition.topEnd(top: 0, end: 3),
+                  badgeContent: Text(
+                    '${cartController.cartItems.length}',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.shopping_cart,
+                      color: Color(0xFF003049),
+                    ),
+                    onPressed: () {
+                      Get.to(() => OrdersPage());
+                    },
+                  ),
+                );
+              }),
               Padding(
-                padding: const EdgeInsets.only(
-                    right: 16.0), // Add padding to the right
+                padding: const EdgeInsets.only(right: 16.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    // Add your onPressed code here!
+                    Get.to(() => OrdersPage());
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF003049), // Button color
+                    backgroundColor: Color(0xFF003049),
                   ),
                   child: Text(
-                    'View Order',
+                    'View Orders',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
             ],
           ),
+          SizedBox(height: 20),
           Expanded(
             child: ListView(
               padding: EdgeInsets.all(16.0),
-              children: [
-                CategorySection(
-                  category: 'Shirts',
-                  items: items,
-                ),
-                CategorySection(category: 'Shoes', items: items),
-                CategorySection(category: 'Accessories', items: items),
-              ],
+              children: categories.map((category) {
+                List<Product> categoryProducts = products
+                    .where((product) => product.categoryId == category.id)
+                    .toList();
+                return CategorySection(
+                  category: category.name,
+                  items: categoryProducts,
+                  addToCart: (product) => cartController.addToCart(product),
+                );
+              }).toList(),
             ),
           ),
         ],
@@ -168,6 +190,8 @@ class _StoreState extends State<Store> {
               .black, // Ensure selected item color is the same as unselected
           type: BottomNavigationBarType.fixed,
           showUnselectedLabels: true,
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -190,40 +214,20 @@ class _StoreState extends State<Store> {
               label: 'Payment',
             ),
           ],
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          selectedIconTheme: IconThemeData(
-            color: Colors.black,
-          ),
         ),
       ),
     );
   }
 }
 
-class CategoryButtons extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      ),
-    );
-  }
-}
-
-class CategorySection extends StatefulWidget {
+class CategorySection extends StatelessWidget {
   final String category;
-  final List<Map<String, String>> items;
+  final List<Product> items;
+  final Function(Product) addToCart;
 
-  CategorySection({required this.category, required this.items});
+  CategorySection(
+      {required this.category, required this.items, required this.addToCart});
 
-  @override
-  _CategorySectionState createState() => _CategorySectionState();
-}
-
-class _CategorySectionState extends State<CategorySection> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -232,7 +236,7 @@ class _CategorySectionState extends State<CategorySection> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
-            widget.category,
+            category,
             style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -240,12 +244,15 @@ class _CategorySectionState extends State<CategorySection> {
           ),
         ),
         Container(
-          height: 250,
+          height: 300, // Increased height for the container
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: widget.items.length,
+            itemCount: items.length,
             itemBuilder: (context, index) {
-              return ItemCard(item: widget.items[index]);
+              return ItemCard(
+                item: items[index],
+                addToCart: addToCart,
+              );
             },
           ),
         ),
@@ -254,48 +261,89 @@ class _CategorySectionState extends State<CategorySection> {
   }
 }
 
-class ItemCard extends StatefulWidget {
-  final Map<String, String> item;
+class ItemCard extends StatelessWidget {
+  final Product item;
+  final Function(Product) addToCart;
 
-  ItemCard({required this.item});
+  ItemCard({required this.item, required this.addToCart});
 
-  @override
-  _ItemCardState createState() => _ItemCardState();
-}
-
-class _ItemCardState extends State<ItemCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
+      color: Color(0xFFEFEFEF),
       elevation: 5,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
       margin: EdgeInsets.symmetric(horizontal: 8.0),
       child: Container(
-        width: 160,
+        width: 200, // Increased width
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Image.asset(widget.item['image']!, fit: BoxFit.cover),
+            Container(
+              height: 100, // Increased height for the image
+              child: Center(
+                child: Image.network(
+                  item.images.isNotEmpty
+                      ? item.images[0]
+                      : 'https://via.placeholder.com/150',
+                  fit: BoxFit.cover,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  (loadingProgress.expectedTotalBytes ?? 1)
+                              : null,
+                        ),
+                      );
+                    }
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(Icons
+                        .error); // Display an error icon if the image fails to load
+                  },
+                ),
+              ),
             ),
             SizedBox(height: 8),
             Text(
-              widget.item['name']!,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              item.name,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold), // Decreased font size
+              overflow: TextOverflow.ellipsis,
             ),
             SizedBox(height: 4),
             Text(
-              widget.item['price']!,
-              style: TextStyle(fontSize: 16, color: Colors.green),
+              item.description,
+              style: TextStyle(
+                  fontSize: 12, color: Colors.black54), // Decreased font size
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+            SizedBox(height: 4),
+            Text(
+              'Quantity: ${item.quantity}',
+              style: TextStyle(
+                  fontSize: 12, color: Colors.black54), // Decreased font size
+            ),
+            SizedBox(height: 4),
+            Text(
+              '\$${item.unitPrice.toStringAsFixed(2)}',
+              style: TextStyle(
+                  fontSize: 14, color: Colors.green), // Decreased font size
             ),
             SizedBox(height: 8),
             ElevatedButton(
               onPressed: () {
-                // Add to cart functionality
+                addToCart(item); // Call the addToCart function
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF003049),

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:membermanagementsystem/constants/constants.dart';
+import 'package:membermanagementsystem/controllers/CartController.dart';
+
+import 'package:membermanagementsystem/controllers/logout.dart';
+import 'package:membermanagementsystem/pages/order.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
@@ -116,6 +120,9 @@ class _DrawerscreenState extends State<Drawerscreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            SizedBox(
+              height: 25,
+            ),
             Row(
               children: <Widget>[
                 GestureDetector(
@@ -162,18 +169,20 @@ class _DrawerscreenState extends State<Drawerscreen> {
             ),
             GestureDetector(
               onTap: () {
-                // Navigate to Logout page
-                Navigator.pushNamed(context, '/Orders');
+                // Ensure CartController is initialized
+                Get.put(CartController());
+
+                // Navigate to OrdersPage
+                Get.to(() => OrdersPage());
               },
               child: NewRow(
-                text: 'Orders',
+                text: 'Store Orders',
                 icon: Icons.store,
               ),
             ),
             GestureDetector(
               onTap: () {
-                // Navigate to Settings page
-                Navigator.pushNamed(context, '/Settings');
+                Get.toNamed('/Settings');
               },
               child: NewRow(
                 text: 'Settings',
@@ -182,8 +191,9 @@ class _DrawerscreenState extends State<Drawerscreen> {
             ),
             GestureDetector(
               onTap: () {
-                // Navigate to Logout page
-                Navigator.pushNamed(context, '/logout');
+                AuthService.logout().then((_) {
+                  Get.offAllNamed('/Login');
+                });
               },
               child: NewRow(
                 text: 'Logout',

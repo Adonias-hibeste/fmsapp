@@ -259,7 +259,7 @@ class NewsPostWidget extends StatelessWidget {
                     imageUrl!,
                     width: double.infinity,
                     fit: BoxFit
-                        .cover, // Use BoxFit.cover to ensure the image covers the container
+                        .fill, // Use BoxFit.cover to ensure the image covers the container
                   ),
                 ),
               ),

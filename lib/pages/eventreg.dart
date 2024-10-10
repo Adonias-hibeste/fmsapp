@@ -150,7 +150,7 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
                 child: ElevatedButton(
                   onPressed: eventController.registerUser,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Color(0xFF003049),
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     textStyle: TextStyle(
                       fontSize: 18,
