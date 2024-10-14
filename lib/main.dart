@@ -3,17 +3,15 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:membermanagementsystem/controllers/CartController.dart';
 import 'package:membermanagementsystem/controllers/Themeservice.dart';
-
+import 'package:membermanagementsystem/controllers/membershipcontroller.dart';
 import 'package:membermanagementsystem/pages/Login.dart';
 import 'package:membermanagementsystem/pages/blogs.dart';
-
 import 'package:membermanagementsystem/pages/events.dart';
-
 import 'package:membermanagementsystem/pages/settings.dart';
 import 'package:membermanagementsystem/pages/signup.dart';
-
 import 'package:membermanagementsystem/pages/splashscreen.dart';
 import 'package:membermanagementsystem/pages/updateprofile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
@@ -48,57 +46,85 @@ final ThemeData darkTheme = ThemeData(
 );
 
 void main() async {
+  WidgetsFlutterBinding
+      .ensureInitialized(); // Ensure widget binding is initialized
   await GetStorage.init();
+  Get.put(MembershipController());
   Get.put(CartController());
   Get.put(ThemeController());
-  runApp(Membermanagementsystem());
+
+  runApp(MemberManagementSystem());
 }
 
-class Membermanagementsystem extends StatefulWidget {
-  const Membermanagementsystem({super.key});
+class MemberManagementSystem extends StatefulWidget {
+  const MemberManagementSystem({super.key});
 
   @override
-  _MembermanagementsystemState createState() => _MembermanagementsystemState();
+  _MemberManagementSystemState createState() => _MemberManagementSystemState();
 }
 
-class _MembermanagementsystemState extends State<Membermanagementsystem> {
+class _MemberManagementSystemState extends State<MemberManagementSystem> {
+  String? userId; // Store the user ID here
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserIdFromPreferences();
+  }
+
+  Future<void> _getUserIdFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    userId =
+        prefs.getInt('userId')?.toString(); // Fetch and store userId as String
+    if (userId == null) {
+      Get.snackbar(
+        'Error',
+        'User ID not found',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+    setState(() {}); // Update the state after fetching the user ID
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ThemeController>(
       builder: (themeController) {
-        // return GetMaterialApp(
-        //   debugShowCheckedModeBanner: false,
-        //   theme: ThemeData.light(),
-        //   darkTheme: ThemeData.dark(),
-        //   themeMode: themeController.theme,
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           theme: lightTheme,
           darkTheme: darkTheme,
-          themeMode: ThemeController().theme,
+          themeMode: themeController.theme,
           home: Splashscreen(),
           onGenerateRoute: (settings) {
-            if (settings.name == '/Signup') {
-              return MaterialPageRoute(builder: (context) => Signup());
+            switch (settings.name) {
+              case '/Signup':
+                return MaterialPageRoute(builder: (context) => Signup());
+              case '/Login':
+                return MaterialPageRoute(builder: (context) => Login());
+              case '/Blogs':
+                return MaterialPageRoute(builder: (context) => Blogs());
+              case '/Events':
+                return MaterialPageRoute(builder: (context) => Events());
+              case '/Settings':
+                if (userId != null) {
+                  return MaterialPageRoute(
+                      builder: (context) => SettingsPage(userId: userId!));
+                }
+                // Return a default route or null if userId is not available
+                return null;
+              case '/UpdateProfilePage':
+                if (userId != null) {
+                  return MaterialPageRoute(
+                      builder: (context) => UpdateProfilePage(userId: userId!));
+                }
+                // Return a default route or null if userId is not available
+                return null;
+              default:
+                return null; // Handle unknown routes
             }
-            if (settings.name == '/Login') {
-              return MaterialPageRoute(builder: (context) => Login());
-            }
-            if (settings.name == '/Blogs') {
-              return MaterialPageRoute(builder: (context) => Blogs());
-            }
-            if (settings.name == '/Events') {
-              return MaterialPageRoute(builder: (context) => Events());
-            }
-            if (settings.name == '/Settings') {
-              return MaterialPageRoute(builder: (context) => SettingsPage());
-            }
-            if (settings.name == '/Updateprofile') {
-              return MaterialPageRoute(
-                  builder: (context) => UpdateProfilePage());
-            }
-            // Handle other routes here
-            return null;
           },
         );
       },

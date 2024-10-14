@@ -188,6 +188,89 @@ class AuthenticationController extends GetxController {
     await prefs.setInt('userId', userData['id']); // Store user ID
   }
 
+  // Future<void> updateProfile({
+  //   required String email,
+  //   required String full_name,
+  //   required String address,
+  //   required String age,
+  //   required String gender,
+  //   required String phone_number,
+  //   required String membership,
+  // }) async {
+  //   if (email.isEmpty ||
+  //       full_name.isEmpty ||
+  //       address.isEmpty ||
+  //       age.isEmpty ||
+  //       gender.isEmpty ||
+  //       phone_number.isEmpty ||
+  //       membership.isEmpty) {
+  //     Get.snackbar(
+  //       'Error',
+  //       'All fields are required',
+  //       snackPosition: SnackPosition.TOP,
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //     );
+  //     return;
+  //   }
+
+  //   if (!GetUtils.isEmail(email)) {
+  //     Get.snackbar(
+  //       'Error',
+  //       'Invalid email format',
+  //       snackPosition: SnackPosition.TOP,
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //     );
+  //     return;
+  //   }
+
+  //   try {
+  //     isLoading.value = true;
+  //     var request =
+  //         http.MultipartRequest('POST', Uri.parse(url + 'updateprofile'));
+
+  //     request.fields['email'] = email;
+  //     request.fields['full_name'] = full_name;
+  //     request.fields['address'] = address;
+  //     request.fields['age'] = age;
+  //     request.fields['gender'] = gender;
+  //     request.fields['phone_number'] = phone_number;
+  //     request.fields['membership'] = membership;
+
+  //     var response = await request.send();
+  //     isLoading.value = false;
+
+  //     if (response.statusCode == 200) {
+  //       Get.snackbar(
+  //         'Success',
+  //         'Profile updated successfully',
+  //         snackPosition: SnackPosition.TOP,
+  //         backgroundColor: Colors.green,
+  //         colorText: Colors.white,
+  //       );
+  //     } else {
+  //       Get.snackbar(
+  //         'Error',
+  //         'Profile update failed',
+  //         snackPosition: SnackPosition.TOP,
+  //         backgroundColor: Colors.red,
+  //         colorText: Colors.white,
+  //       );
+  //     }
+  //   } catch (e) {
+  //     isLoading.value = false;
+  //     print('Update profile error: $e');
+  //     Get.snackbar(
+  //       'Error',
+  //       'An error occurred during profile update',
+  //       snackPosition: SnackPosition.TOP,
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //     );
+  //   }
+  // }
+
   Future login({
     required String email,
     required String password,

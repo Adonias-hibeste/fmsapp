@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:membermanagementsystem/controllers/Themeservice.dart';
+import 'package:membermanagementsystem/pages/updateprofile.dart';
 
 class SettingsPage extends StatelessWidget {
+  final String userId; // Accept userId as a parameter
+
+  SettingsPage({required this.userId}); // Constructor to receive userId
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,21 +33,19 @@ class SettingsPage extends StatelessWidget {
             icon: Icons.person,
             title: 'Update Profile',
             onTap: () {
-              Get.toNamed('/Updateprofile');
+              Get.to(UpdateProfilePage(userId: userId)); // Pass userId directly
             },
           ),
-          GetBuilder<ThemeController>(
-            builder: (themeController) {
-              return _buildSwitchTile(
-                icon: Icons.brightness_6,
-                title: 'Enable Dark Mode',
-                value: themeController.isDarkMode,
-                onChanged: (bool value) {
-                  themeController.switchTheme();
-                },
-              );
-            },
-          ),
+          GetBuilder<ThemeController>(builder: (themeController) {
+            return _buildSwitchTile(
+              icon: Icons.brightness_6,
+              title: 'Enable Dark Mode',
+              value: themeController.isDarkMode,
+              onChanged: (bool value) {
+                themeController.switchTheme();
+              },
+            );
+          }),
           Divider(),
           _buildSectionTitle('Help'),
           _buildListTile(
@@ -59,7 +62,7 @@ class SettingsPage extends StatelessWidget {
             title: 'Build Version',
             subtitle: 'V 1.0.0',
             onTap: () {
-              // Handle delete account
+              // Handle build version info
             },
           ),
           Divider(),
