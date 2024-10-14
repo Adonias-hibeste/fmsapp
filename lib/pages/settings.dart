@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http; // Import http package
+import 'package:membermanagementsystem/constants/constants.dart';
+import 'dart:convert'; // For json encoding
 import 'package:membermanagementsystem/controllers/Themeservice.dart';
+import 'package:membermanagementsystem/pages/updatepassword.dart';
 import 'package:membermanagementsystem/pages/updateprofile.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -36,21 +40,26 @@ class SettingsPage extends StatelessWidget {
               Get.to(UpdateProfilePage(userId: userId)); // Pass userId directly
             },
           ),
-          GetBuilder<ThemeController>(builder: (themeController) {
-            return _buildSwitchTile(
-              icon: Icons.brightness_6,
-              title: 'Enable Dark Mode',
-              value: themeController.isDarkMode,
-              onChanged: (bool value) {
-                themeController.switchTheme();
-              },
-            );
-          }),
+          _buildListTile(
+            icon: Icons.password_rounded,
+            title: 'Update Password',
+            onTap: () {
+              Get.to(UpdatePasswordPage(
+                  userId: userId)); // Pass userId to UpdatePasswordPage
+            },
+          ),
           Divider(),
           _buildSectionTitle('Help'),
           _buildListTile(
             icon: Icons.support,
             title: 'Support',
+            onTap: () {
+              // Handle support
+            },
+          ),
+          _buildListTile(
+            icon: Icons.policy,
+            title: 'Privacy and Policy',
             onTap: () {
               // Handle support
             },
@@ -73,12 +82,62 @@ class SettingsPage extends StatelessWidget {
             iconColor: Colors.red,
             textColor: Colors.red,
             onTap: () {
-              // Handle delete account
+              _showDeleteConfirmation(context); // Show confirmation dialog
             },
           ),
         ],
       ),
     );
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text(
+              'Are you sure you want to delete your account? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () {
+                _deleteAccount(); // Call delete account function
+                Navigator.of(context).pop(); // Close the dialog
+                Get.offAllNamed('/Login');
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteAccount() async {
+    final String url = url4 + 'user/$userId'; // Update with your actual API URL
+
+    try {
+      final response = await http.delete(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Successfully deleted the user
+        Get.snackbar('Success', 'Account deleted successfully');
+        // Optionally navigate back to the login page or home page
+      } else {
+        // Handle error response
+        final errorMessage =
+            json.decode(response.body)['message'] ?? 'Error deleting account';
+        Get.snackbar('Error', errorMessage);
+      }
+    } catch (error) {
+      Get.snackbar('Error', 'Failed to delete account. Please try again.');
+    }
   }
 
   Widget _buildSectionTitle(String title) {

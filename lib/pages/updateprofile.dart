@@ -155,6 +155,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                       phone_number: phoneNumber,
                       membership: membership,
                     );
+                    Get.offAllNamed('/Login');
                   },
                   child: Text('Update Profile'),
                 ),

@@ -156,12 +156,20 @@ class _DrawerscreenState extends State<Drawerscreen> {
             SizedBox(height: 40),
             GestureDetector(
               onTap: () {
-                // Navigate to Membership page
-                Navigator.pushNamed(context, '/membership');
+                Get.toNamed('/UpdateProfilePage');
               },
               child: NewRow(
-                text: 'Membership: $userMembership',
-                icon: Icons.card_membership,
+                text: 'Update Profile',
+                icon: Icons.person,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Get.toNamed('/UpdatePasswordPage');
+              },
+              child: NewRow(
+                text: 'Update Password',
+                icon: Icons.password_rounded,
               ),
             ),
             GestureDetector(

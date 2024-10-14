@@ -10,6 +10,7 @@ import 'package:membermanagementsystem/pages/events.dart';
 import 'package:membermanagementsystem/pages/settings.dart';
 import 'package:membermanagementsystem/pages/signup.dart';
 import 'package:membermanagementsystem/pages/splashscreen.dart';
+import 'package:membermanagementsystem/pages/updatepassword.dart';
 import 'package:membermanagementsystem/pages/updateprofile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -76,6 +77,7 @@ class _MemberManagementSystemState extends State<MemberManagementSystem> {
     final prefs = await SharedPreferences.getInstance();
     userId =
         prefs.getInt('userId')?.toString(); // Fetch and store userId as String
+    print('Retrieved userId: $userId'); // Debugging line
     if (userId == null) {
       Get.snackbar(
         'Error',
@@ -113,15 +115,20 @@ class _MemberManagementSystemState extends State<MemberManagementSystem> {
                   return MaterialPageRoute(
                       builder: (context) => SettingsPage(userId: userId!));
                 }
-                // Return a default route or null if userId is not available
-                return null;
+                return null; // Return null if userId is not available
               case '/UpdateProfilePage':
                 if (userId != null) {
                   return MaterialPageRoute(
                       builder: (context) => UpdateProfilePage(userId: userId!));
                 }
-                // Return a default route or null if userId is not available
-                return null;
+                return null; // Return null if userId is not available
+              case '/UpdatePasswordPage':
+                if (userId != null) {
+                  return MaterialPageRoute(
+                      builder: (context) =>
+                          UpdatePasswordPage(userId: userId!));
+                }
+                return null; // Return null if userId is not available
               default:
                 return null; // Handle unknown routes
             }
