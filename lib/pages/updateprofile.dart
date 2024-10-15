@@ -24,35 +24,51 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
 
   String? selectedGender;
   String? selectedMembership;
+  bool canChangeMembership = true; // Flag to track membership change permission
 
   @override
   void initState() {
     super.initState();
-    membershipController.fetchMemberships(); // Fetch memberships here
+    membershipController.fetchMemberships(); // Fetch memberships
+    profileController.fetchProfileData(widget.userId); // Fetch profile data
+    profileController.fetchMembershipEndDate(widget.userId).then((_) {
+      checkMembershipChangeEligibility(); // Check if the user can change membership
+    });
+  }
+
+  // Method to check if the user can change the membership
+  void checkMembershipChangeEligibility() {
+    String endDateString = profileController.membershipEndDate.value;
+    if (endDateString.isNotEmpty) {
+      DateTime membershipEndDate = DateTime.parse(endDateString);
+      DateTime now = DateTime.now();
+
+      // Check if less than 30 days have passed since the end of membership
+      if (now.isBefore(membershipEndDate.add(Duration(days: 30)))) {
+        setState(() {
+          canChangeMembership = false; // Disable membership change
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Update Profile',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text('Update Profile', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
       ),
       body: Obx(() {
-        // Check if the memberships are loaded
-        if (membershipController.memberships.isEmpty) {
+        // Check if the profile data is loading
+        if (profileController.isLoading.value ||
+            membershipController.memberships.isEmpty) {
           return Center(child: CircularProgressIndicator());
         }
 
@@ -116,16 +132,24 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 DropdownButtonFormField<String>(
                   value: selectedMembership,
                   items: membershipItems,
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedMembership = newValue;
-                    });
-                  },
-                  decoration: InputDecoration(labelText: 'Membership'),
+                  onChanged: canChangeMembership
+                      ? (newValue) {
+                          setState(() {
+                            selectedMembership = newValue;
+                          });
+                        }
+                      : null, // Disable if the user cannot change the membership
+                  decoration: InputDecoration(
+                    labelText: 'Membership',
+                    helperText: canChangeMembership
+                        ? 'Select your membership'
+                        : 'You cannot change membership before 30 days',
+                  ),
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () async {
+                    // Logic for updating the profile
                     String email = emailController.text.trim();
                     String fullName = fullNameController.text.trim();
                     String address = addressController.text.trim();
@@ -133,17 +157,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     String gender = selectedGender ?? '';
                     String phoneNumber = phoneNumberController.text.trim();
                     String membership = selectedMembership ?? '';
-
-                    // Debugging statements
-                    print('Updating profile for User ID: ${widget.userId}');
-                    print('Data being updated:');
-                    print('Email: $email');
-                    print('Full Name: $fullName');
-                    print('Address: $address');
-                    print('Age: $age');
-                    print('Gender: $gender');
-                    print('Phone Number: $phoneNumber');
-                    print('Membership ID: $membership');
 
                     await profileController.updateProfile(
                       userId: widget.userId,

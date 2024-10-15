@@ -6,7 +6,7 @@ import 'package:membermanagementsystem/constants/constants.dart';
 class ProfileController extends GetxController {
   var isLoading = false.obs;
   var profileData = {}.obs;
-
+  var membershipEndDate = ''.obs; // Define membershipEndDate as RxString
   // Fetch profile data from backend using user ID
   Future<void> fetchProfileData(String userId) async {
     try {
@@ -19,6 +19,26 @@ class ProfileController extends GetxController {
         profileData.value = data;
       } else {
         Get.snackbar('Error', 'Failed to fetch profile data');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Something went wrong: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> fetchMembershipEndDate(String userId) async {
+    try {
+      isLoading(true);
+      var response = await http.get(
+        Uri.parse(url + 'user/$userId/membership-enddate'),
+      );
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        membershipEndDate.value = data['membership_endDate']
+            .toString(); // Parse membership_endDate as string
+      } else {
+        Get.snackbar('Error', 'Failed to fetch membership end date');
       }
     } catch (e) {
       Get.snackbar('Error', 'Something went wrong: $e');

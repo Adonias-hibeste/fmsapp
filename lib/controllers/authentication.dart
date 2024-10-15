@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:membermanagementsystem/constants/constants.dart';
+import 'package:membermanagementsystem/main.dart';
 import 'package:membermanagementsystem/models/Registration_model.dart';
 import 'package:membermanagementsystem/models/blogspost.dart';
 import 'package:http_parser/http_parser.dart';
@@ -188,7 +189,7 @@ class AuthenticationController extends GetxController {
     await prefs.setInt('userId', userData['id']); // Store user ID
   }
 
-  Future login({
+  Future<void> login({
     required String email,
     required String password,
   }) async {
@@ -253,6 +254,10 @@ class AuthenticationController extends GetxController {
         };
 
         await storeUserData(userData);
+
+        // Set the user ID in the main app state
+        memberManagementSystemKey.currentState
+            ?.setUserId(responseBody['user']['id'].toString());
 
         Get.snackbar(
           'Success',

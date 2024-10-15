@@ -14,6 +14,10 @@ import 'package:membermanagementsystem/pages/updatepassword.dart';
 import 'package:membermanagementsystem/pages/updateprofile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// Global key for MemberManagementSystem
+final GlobalKey<_MemberManagementSystemState> memberManagementSystemKey =
+    GlobalKey<_MemberManagementSystemState>();
+
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   primaryColor: Color(0xFF003049),
@@ -54,7 +58,8 @@ void main() async {
   Get.put(CartController());
   Get.put(ThemeController());
 
-  runApp(MemberManagementSystem());
+  runApp(
+      MemberManagementSystem(key: memberManagementSystemKey)); // Pass the key
 }
 
 class MemberManagementSystem extends StatefulWidget {
@@ -70,7 +75,6 @@ class _MemberManagementSystemState extends State<MemberManagementSystem> {
   @override
   void initState() {
     super.initState();
-    _getUserIdFromPreferences();
   }
 
   Future<void> _getUserIdFromPreferences() async {
@@ -114,27 +118,36 @@ class _MemberManagementSystemState extends State<MemberManagementSystem> {
                 if (userId != null) {
                   return MaterialPageRoute(
                       builder: (context) => SettingsPage(userId: userId!));
+                } else {
+                  return MaterialPageRoute(builder: (context) => Login());
                 }
-                return null; // Return null if userId is not available
               case '/UpdateProfilePage':
                 if (userId != null) {
                   return MaterialPageRoute(
                       builder: (context) => UpdateProfilePage(userId: userId!));
+                } else {
+                  return MaterialPageRoute(builder: (context) => Login());
                 }
-                return null; // Return null if userId is not available
               case '/UpdatePasswordPage':
                 if (userId != null) {
                   return MaterialPageRoute(
                       builder: (context) =>
                           UpdatePasswordPage(userId: userId!));
+                } else {
+                  return MaterialPageRoute(builder: (context) => Login());
                 }
-                return null; // Return null if userId is not available
               default:
-                return null; // Handle unknown routes
+                return MaterialPageRoute(builder: (context) => Login());
             }
           },
         );
       },
     );
+  }
+
+  void setUserId(String id) {
+    setState(() {
+      userId = id;
+    });
   }
 }
