@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:membermanagementsystem/components/my_textfield.dart';
 import 'package:membermanagementsystem/controllers/authentication.dart';
-import 'package:membermanagementsystem/controllers/Apiservice.dart';
 import 'package:membermanagementsystem/controllers/membershipcontroller.dart';
+import 'package:membermanagementsystem/models/membership.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Signup extends StatefulWidget {
   Signup({super.key});
@@ -254,11 +254,10 @@ class _SignupState extends State<Signup> {
                                   // Ensure the initial value is valid
                                   String? selectedMembership = authController1
                                       .registrationData.value.membership;
-                                  if (selectedMembership != null &&
-                                      !membershipController.memberships.any(
-                                          (membership) =>
-                                              membership.id.toString() ==
-                                              selectedMembership)) {
+                                  if (!membershipController.memberships.any(
+                                      (membership) =>
+                                          membership.id.toString() ==
+                                          selectedMembership)) {
                                     selectedMembership =
                                         null; // Reset if the initial value is not valid
                                   }
@@ -270,6 +269,45 @@ class _SignupState extends State<Signup> {
                                           'Selected Membership ID: $newValue'); // Debug print
                                       authController1
                                           .updateMembership(newValue!);
+
+                                      // Find the selected membership using its ID
+                                      final selectedMembershipDetails =
+                                          membershipController.memberships
+                                              .firstWhere(
+                                        (membership) =>
+                                            membership.id.toString() ==
+                                            newValue,
+                                        orElse: () {
+                                          Get.snackbar(
+                                            'Error',
+                                            'Membership not found',
+                                            snackPosition: SnackPosition.TOP,
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
+                                          return Membership(
+                                              id: 0,
+                                              name: 'Unknown',
+                                              price:
+                                                  0.0); // Return a default membership
+                                        },
+                                      );
+                                      Future<void> storeMembershipDetails(
+                                          String name, double? price) async {
+                                        final prefs = await SharedPreferences
+                                            .getInstance();
+                                        await prefs.setString(
+                                            'membershipName', name);
+                                        await prefs.setString(
+                                            'membershipPrice',
+                                            price?.toString() ??
+                                                '0'); // Use '0' if price is null
+                                      }
+
+                                      // Store the membership name and price in SharedPreferences
+                                      storeMembershipDetails(
+                                          selectedMembershipDetails.name,
+                                          selectedMembershipDetails.price);
                                     },
                                     decoration: InputDecoration(
                                       labelText: 'Membership Type',

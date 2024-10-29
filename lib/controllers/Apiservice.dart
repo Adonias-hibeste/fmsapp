@@ -1,12 +1,8 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:http/http.dart' as http;
 import 'package:membermanagementsystem/constants/constants.dart';
 import 'package:membermanagementsystem/models/category.dart';
 import 'package:membermanagementsystem/models/product.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   Future<List<dynamic>> fetchMemberships() async {

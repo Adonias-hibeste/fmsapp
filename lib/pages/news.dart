@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:membermanagementsystem/controllers/logout.dart';
 import 'package:membermanagementsystem/models/Newspost.dart';
-import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:http/io_client.dart';
 import 'package:membermanagementsystem/constants/constants.dart';
-import 'package:membermanagementsystem/models/blogspost.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -277,7 +272,7 @@ class NewsPostWidget extends StatelessWidget {
                 ),
               ),
             ),
-            ButtonBar(
+            OverflowBar(
               alignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 IconButton(
@@ -342,7 +337,7 @@ class NewsPostWidget extends StatelessWidget {
                           },
                         );
 
-                        if (comment != null && comment.isNotEmpty) {
+                        if (comment!.isNotEmpty) {
                           // Handle the comment here
                           print('Comment: $comment');
 
@@ -524,7 +519,7 @@ class NewsDetailPage extends StatelessWidget {
                           },
                         );
 
-                        if (comment != null && comment.isNotEmpty) {
+                        if (comment!.isNotEmpty) {
                           // Handle the comment here
                           print('Comment: $comment');
 

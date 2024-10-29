@@ -2,11 +2,8 @@ import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:membermanagementsystem/constants/constants.dart';
 import 'package:membermanagementsystem/controllers/Apiservice.dart';
 import 'package:membermanagementsystem/controllers/CartController.dart';
-import 'package:membermanagementsystem/controllers/logout.dart';
 import 'package:membermanagementsystem/models/category.dart';
 import 'package:membermanagementsystem/models/product.dart';
 import 'package:membermanagementsystem/pages/blogs.dart';
@@ -14,11 +11,6 @@ import 'package:membermanagementsystem/pages/events.dart';
 import 'package:membermanagementsystem/pages/news.dart';
 import 'package:membermanagementsystem/pages/order.dart';
 import 'package:membermanagementsystem/pages/payments.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class Store extends StatefulWidget {
   @override

@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:http/io_client.dart';
 import 'package:membermanagementsystem/constants/constants.dart';
 
-import 'package:membermanagementsystem/controllers/logout.dart';
 import 'package:membermanagementsystem/models/blogspost.dart';
 import 'package:http/http.dart' as http;
 import 'package:membermanagementsystem/pages/drawer.dart';
@@ -16,7 +12,6 @@ import 'package:membermanagementsystem/pages/events.dart';
 
 import 'package:membermanagementsystem/pages/news.dart';
 import 'package:membermanagementsystem/pages/payments.dart';
-import 'package:membermanagementsystem/pages/settings.dart';
 import 'package:membermanagementsystem/pages/store.dart';
 
 class Blogs extends StatefulWidget {
@@ -401,7 +396,7 @@ class BlogPostWidget extends StatelessWidget {
                           },
                         );
 
-                        if (comment != null && comment.isNotEmpty) {
+                        if (comment!.isNotEmpty) {
                           // Handle the comment here
                           print('Comment: $comment');
 
@@ -585,7 +580,7 @@ class BlogDetailPage extends StatelessWidget {
                           },
                         );
 
-                        if (comment != null && comment.isNotEmpty) {
+                        if (comment!.isNotEmpty) {
                           // Handle the comment here
                           print('Comment: $comment');
 

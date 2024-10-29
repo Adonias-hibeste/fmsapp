@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:membermanagementsystem/controllers/CartController.dart';
+import 'package:membermanagementsystem/pages/billingpage.dart';
 
 class OrdersPage extends StatelessWidget {
   final CartController cartController = Get.find<CartController>();
@@ -131,12 +132,15 @@ class OrdersPage extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          // Placeholder for checkout functionality
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text('Proceeding to checkout...')),
+                          // Navigate to BillingPage with the total amount
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => BillingPage(
+                                totalAmount: cartController
+                                    .totalPrice, // Passing total amount
+                              ),
+                            ),
                           );
-                          // Implement actual checkout logic here
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF003049),

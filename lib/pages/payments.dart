@@ -1,10 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:membermanagementsystem/controllers/logout.dart';
-import 'package:membermanagementsystem/pages/blogs.dart';
-import 'package:membermanagementsystem/pages/events.dart';
-import 'package:membermanagementsystem/pages/news.dart';
-import 'package:membermanagementsystem/pages/store.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class PaymentFormPage extends StatefulWidget {
   @override
@@ -12,216 +10,201 @@ class PaymentFormPage extends StatefulWidget {
 }
 
 class _PaymentFormPageState extends State<PaymentFormPage> {
-  int _selectedIndex = 0;
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController userMembershipController = TextEditingController();
+  TextEditingController userEmailController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
 
-  void _onItemTapped(int index) {
+  String paymentUrl = '';
+  late final WebViewController _controller;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+    setupWebView();
+  }
+
+  Future<void> fetchUserData() async {
+    final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedIndex = index;
+      userNameController.text = prefs.getString('userName') ?? 'Unknown';
+      userEmailController.text =
+          prefs.getString('userEmail') ?? 'unknown@example.com';
+      userMembershipController.text =
+          prefs.getString('membershipName') ?? 'N/A';
+      amountController.text = prefs.getString('membershipPrice') ??
+          '0.0'; // Default to 0.0 if not found
     });
+  }
 
-    switch (index) {
-      case 0:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Blogs()),
+  Future<void> initiatePayment() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId =
+        prefs.getInt('userId'); // Retrieve user_id from shared preferences
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://192.168.206.97/api/user/membershipPayment/process'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {
+          'user_id': userId.toString(), // Pass the user_id as a string
+          'amount': amountController.text,
+          'name': userNameController.text, // Send the name
+          'email': userEmailController.text,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData['status'] == 'success') {
+          setState(() {
+            paymentUrl = responseData['data']['checkout_url'];
+            isLoading = false;
+            _controller
+                .loadRequest(Uri.parse(paymentUrl)); // Load the payment URL
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${responseData['message']}')),
+          );
+        }
+      } else {
+        final error = jsonDecode(response.body)['message'];
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $error')),
         );
-        break;
-      case 1:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Events()),
-        );
-        break;
-      case 2:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => News()),
-        );
-        break;
-      case 3:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Store()),
-        );
-        break;
-      case 4:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PaymentFormPage()),
-        );
-        break;
+      }
+    } catch (e) {
+      print('Payment initiation failed: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Payment initiation failed.')),
+      );
     }
+  }
+
+  void setupWebView() {
+    final PlatformWebViewControllerCreationParams params =
+        PlatformWebViewControllerCreationParams();
+
+    final WebViewController controller =
+        WebViewController.fromPlatformCreationParams(params);
+
+    controller
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            debugPrint('WebView is loading (progress : $progress%)');
+          },
+          onPageStarted: (String url) {
+            setState(() {
+              isLoading = true;
+            });
+          },
+          onPageFinished: (String url) {
+            setState(() {
+              isLoading = false;
+            });
+          },
+          onWebResourceError: (WebResourceError error) {
+            debugPrint('Page resource error: ${error.description}');
+          },
+          onHttpError: (HttpResponseError error) {
+            debugPrint('HTTP error occurred: ${error.response?.statusCode}');
+          },
+        ),
+      );
+
+    _controller = controller;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF003049),
-        title: Text(
-          "Membership Payment",
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
+        title: Text('Payment Form', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.green.shade700,
         leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pop(context);
           },
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Get.toNamed('/Settings');
-            },
-          ),
-        ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Make a Payment',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(height: 20.0),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Member Name',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.person),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  labelText: 'Membership Type',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.card_membership),
-                ),
-                items: [
-                  DropdownMenuItem(
-                    value: 'Regular',
-                    child: Text('Regular'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Gold',
-                    child: Text('Gold'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Premium',
-                    child: Text('Premium'),
-                  ),
-                ],
-                onChanged: (value) {
-                  setState(() {});
-                },
-              ),
-              SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  labelText: 'Payment Method',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.payment),
-                ),
-                items: [
-                  DropdownMenuItem(
-                    value: 'Telebirr',
-                    child: Text('Telebirr'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Bank_transfer',
-                    child: Text('Bank_transfer'),
-                  ),
-                ],
-                onChanged: (value) {
-                  setState(() {});
-                },
-              ),
-              SizedBox(height: 16.0),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Amount to Pay',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.attach_money),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: 24.0),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Handle payment submission
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF003049),
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    textStyle: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: userNameController,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    labelStyle: TextStyle(color: Colors.green.shade700),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green.shade700),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green.shade700),
                     ),
                   ),
-                  child: Text(
-                    'Submit Payment',
-                    style: TextStyle(color: Colors.white),
+                ),
+                SizedBox(height: 16),
+                TextField(
+                  controller: userMembershipController,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Membership',
+                    labelStyle: TextStyle(color: Colors.green.shade700),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green.shade700),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green.shade700),
+                    ),
                   ),
                 ),
-              ),
-            ],
+                SizedBox(height: 16),
+                TextField(
+                  controller: amountController,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Amount',
+                    labelStyle: TextStyle(color: Colors.green.shade700),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green.shade700),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green.shade700),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: initiatePayment,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green.shade700,
+                  ),
+                  child: Text('Submit Payment',
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(5.0), // Adjust the padding as needed
-        child: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          unselectedItemColor: Colors.black,
-          selectedItemColor: Colors
-              .black, // Ensure selected item color is the same as unselected
-          type: BottomNavigationBarType.fixed,
-          showUnselectedLabels: true,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
+          if (!isLoading && paymentUrl.isNotEmpty)
+            Expanded(
+              child: WebViewWidget(controller: _controller),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.event),
-              label: 'Events',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.article),
-              label: 'News',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.store),
-              label: 'Store',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.payment),
-              label: 'Payment',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          selectedIconTheme: IconThemeData(
-            color: Colors.black,
-          ),
-        ),
+        ],
       ),
     );
   }

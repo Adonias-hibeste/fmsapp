@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:membermanagementsystem/controllers/logout.dart';
 import 'package:membermanagementsystem/models/eventspost.dart';
-import 'package:flutter/material.dart';
-import 'package:http/io_client.dart';
 import 'package:membermanagementsystem/constants/constants.dart';
-import 'package:membermanagementsystem/models/blogspost.dart';
 import 'package:http/http.dart' as http;
 import 'package:membermanagementsystem/pages/blogs.dart';
 import 'dart:convert';
@@ -277,7 +272,7 @@ class EventsPostWidget extends StatelessWidget {
                 ),
               ),
             ),
-            ButtonBar(
+            OverflowBar(
               alignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 ElevatedButton(
@@ -348,7 +343,7 @@ class EventsPostWidget extends StatelessWidget {
                           },
                         );
 
-                        if (comment != null && comment.isNotEmpty) {
+                        if (comment!.isNotEmpty) {
                           // Handle the comment here
                           print('Comment: $comment');
 
@@ -537,7 +532,7 @@ class EventsDetailPage extends StatelessWidget {
                           },
                         );
 
-                        if (comment != null && comment.isNotEmpty) {
+                        if (comment!.isNotEmpty) {
                           // Handle the comment here
                           print('Comment: $comment');
 

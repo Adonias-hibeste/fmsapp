@@ -17,11 +17,13 @@ class MembershipController extends GetxController {
     try {
       var fetchedMemberships = await apiService.fetchMemberships();
       memberships.assignAll(
-          fetchedMemberships.map((e) => Membership.fromJson(e)).toList());
+        fetchedMemberships.map((e) => Membership.fromJson(e)).toList(),
+      );
     } catch (e) {
+      print("Failed to load memberships: $e"); // Log the error for more info
       Get.snackbar(
         'Error',
-        'Failed to load memberships',
+        'Failed to load memberships: $e',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,

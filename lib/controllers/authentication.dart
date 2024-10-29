@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:membermanagementsystem/constants/constants.dart';
 import 'package:membermanagementsystem/main.dart';
 import 'package:membermanagementsystem/models/Registration_model.dart';
-import 'package:membermanagementsystem/models/blogspost.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -179,14 +176,15 @@ class AuthenticationController extends GetxController {
 
   Future<void> storeUserData(Map<String, dynamic> userData) async {
     final prefs = await SharedPreferences.getInstance();
+
     await prefs.setString('userName', userData['name'] ?? 'Unknown');
     await prefs.setString(
         'userEmail', userData['email'] ?? 'unknown@example.com');
-    await prefs.setString(
-        'userMembership', userData['membership']?.toString() ?? 'N/A');
+    await prefs.setString('userMembership',
+        userData['membership']?.toString() ?? 'N/A'); // Membership ID
     await prefs.setString('userAddress', userData['address'] ?? 'N/A');
     await prefs.setString('userAge', userData['age']?.toString() ?? 'N/A');
-    await prefs.setInt('userId', userData['id']); // Store user ID
+    await prefs.setInt('userId', userData['id']);
   }
 
   Future<void> login({
@@ -244,20 +242,54 @@ class AuthenticationController extends GetxController {
 
       if (response.statusCode == 200) {
         final responseBody = json.decode(response.body);
+
+        // Debug: Print response body to check the structure
+        print('Response Body: $responseBody');
+
+        final user = responseBody['user'];
+        final profile = responseBody['profile'];
+
+        // Safeguard: Check if user and profile are actually maps
+        if (user is! Map || profile is! Map) {
+          Get.snackbar(
+            'Error',
+            'Unexpected data format in response',
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+          return;
+        }
+
+        // Collect user data
         final userData = {
-          'id': responseBody['user']['id'], // Ensure you include the user ID
-          'name': responseBody['user']['full_name'],
-          'email': responseBody['user']['email'],
-          'membership': responseBody['profile']['membership_id'],
-          'address': responseBody['profile']['address'],
-          'age': responseBody['profile']['age'],
+          'id': user['id'], // Ensure this is an int
+          'name': user['full_name'] ?? 'Unknown',
+          'email': user['email'] ?? 'unknown@example.com',
+          'membership': profile['membership_id'], // This should be the ID
+          'address': profile['address'] ?? 'N/A',
+          'age': profile['age']?.toString() ??
+              'N/A', // Convert age to String if necessary
+          // Add membership details directly from the profile if available
+          'membershipName': profile['membership_name'] ??
+              'Default Membership', // Adjust this key if needed
+          'membershipPrice':
+              profile['membership_price'] ?? 0 // Adjust this key if needed
         };
 
         await storeUserData(userData);
 
+        // Debugging: Print values in SharedPreferences to confirm correct storage
+        final prefs = await SharedPreferences.getInstance();
+        print('User ID: ${prefs.getInt('userId')}');
+        print('User Name: ${prefs.getString('userName')}');
+        print('Membership: ${prefs.getString('userMembership')}');
+        print('Membership Name: ${prefs.getString('membershipName')}');
+        print('Membership Price: ${prefs.getString('membershipPrice')}');
+
         // Set the user ID in the main app state
         memberManagementSystemKey.currentState
-            ?.setUserId(responseBody['user']['id'].toString());
+            ?.setUserId(user['id'].toString());
 
         Get.snackbar(
           'Success',
@@ -269,24 +301,14 @@ class AuthenticationController extends GetxController {
         Get.offAllNamed('/Blogs');
       } else {
         final responseBody = json.decode(response.body);
-        if (responseBody != null && responseBody['message'] != null) {
-          final errorMessage = responseBody['message'];
-          Get.snackbar(
-            'Error',
-            errorMessage,
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        } else {
-          Get.snackbar(
-            'Error',
-            'Login failed',
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        }
+        final errorMessage = responseBody['message'] ?? 'Login failed';
+        Get.snackbar(
+          'Error',
+          errorMessage,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       }
     } catch (e) {
       isLoading.value = false;
