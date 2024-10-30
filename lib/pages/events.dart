@@ -93,7 +93,7 @@ class _EventsState extends State<Events> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF003049),
+        backgroundColor: Colors.green.shade800,
         title: Text(
           "Events",
           style: TextStyle(color: Colors.white),
@@ -185,31 +185,6 @@ class _EventsState extends State<Events> {
   }
 }
 
-Future<bool> submitComment(String comment) async {
-  try {
-    final response = await http.post(
-      Uri.parse('your_api_endpoint'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer your_access_token',
-      },
-      body: jsonEncode({'comment': comment}),
-    );
-
-    if (response.statusCode == 200) {
-      print('Comment submitted: ${response.body}');
-      return true;
-    } else {
-      print('Failed to submit comment: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      return false;
-    }
-  } catch (e) {
-    print('Error submitting comment: $e');
-    return false;
-  }
-}
-
 class EventsPostWidget extends StatelessWidget {
   final String? name;
   final String? description;
@@ -280,7 +255,7 @@ class EventsPostWidget extends StatelessWidget {
                     Get.to(() => EventRegistrationPage());
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF003049), // Blue color
+                    backgroundColor: Colors.green.shade800, // Blue color
                   ),
                   child: Text(
                     'Register',
@@ -302,7 +277,7 @@ class EventsPostWidget extends StatelessWidget {
                                 'Enter your comment',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF003049),
+                                  color: Colors.green.shade800,
                                 ),
                               ),
                               content: TextField(
@@ -335,46 +310,13 @@ class EventsPostWidget extends StatelessWidget {
                                         .pop(commentController.text);
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF003049),
+                                    backgroundColor: Colors.green.shade800,
                                   ),
                                 ),
                               ],
                             );
                           },
                         );
-
-                        if (comment!.isNotEmpty) {
-                          // Handle the comment here
-                          print('Comment: $comment');
-
-                          // Simulate API call to submit the comment
-                          bool isSuccess = await submitComment(comment);
-
-                          if (isSuccess) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content:
-                                    Text('Comment submitted successfully!'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Failed to submit comment.'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        } else {
-                          print('No comment entered');
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('No comment entered.'),
-                              backgroundColor: Colors.orange,
-                            ),
-                          );
-                        }
                       },
                     );
                   },
@@ -411,7 +353,7 @@ class EventsDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFFEFEFEF),
       appBar: AppBar(
-        backgroundColor: Color(0xFF003049),
+        backgroundColor: Colors.green.shade800,
         title: Text(
           title,
           style: TextStyle(color: Colors.white),
@@ -468,7 +410,7 @@ class EventsDetailPage extends StatelessWidget {
                     Get.to(() => EventRegistrationPage());
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF003049), // Blue color
+                    backgroundColor: Colors.green.shade800, // Blue color
                   ),
                   child: Text(
                     'Register',
@@ -491,7 +433,7 @@ class EventsDetailPage extends StatelessWidget {
                                 'Enter your comment',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF003049),
+                                  color: Colors.green.shade800,
                                 ),
                               ),
                               content: TextField(
@@ -524,46 +466,13 @@ class EventsDetailPage extends StatelessWidget {
                                         .pop(commentController.text);
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF003049),
+                                    backgroundColor: Colors.green.shade800,
                                   ),
                                 ),
                               ],
                             );
                           },
                         );
-
-                        if (comment!.isNotEmpty) {
-                          // Handle the comment here
-                          print('Comment: $comment');
-
-                          // Simulate API call to submit the comment
-                          bool isSuccess = await submitComment(comment);
-
-                          if (isSuccess) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content:
-                                    Text('Comment submitted successfully!'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Failed to submit comment.'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        } else {
-                          print('No comment entered');
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('No comment entered.'),
-                              backgroundColor: Colors.orange,
-                            ),
-                          );
-                        }
                       },
                     );
                   },

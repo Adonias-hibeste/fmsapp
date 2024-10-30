@@ -10,7 +10,7 @@ class OrdersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF003049),
+        backgroundColor: Colors.green.shade800,
         title: Text(
           "Orders",
           style: TextStyle(color: Colors.white),
@@ -143,7 +143,7 @@ class OrdersPage extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF003049),
+                          backgroundColor: Colors.green.shade800,
                           padding: EdgeInsets.symmetric(
                               horizontal: 32, vertical: 12),
                         ),

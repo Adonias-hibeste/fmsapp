@@ -56,6 +56,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green.shade800,
         title: Text('Update Profile', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         leading: IconButton(
@@ -148,6 +149,13 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green.shade800,
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
                   onPressed: () async {
                     // Logic for updating the profile
                     String email = emailController.text.trim();
@@ -170,7 +178,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     );
                     Get.offAllNamed('/Login');
                   },
-                  child: Text('Update Profile'),
+                  child: Text(
+                    'Update Profile',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),

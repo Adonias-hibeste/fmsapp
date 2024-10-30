@@ -87,7 +87,7 @@ class _StoreState extends State<Store> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF003049),
+        backgroundColor: Colors.green.shade800,
         title: Text(
           "Store",
           style: TextStyle(color: Colors.white),
@@ -130,7 +130,7 @@ class _StoreState extends State<Store> {
                   child: IconButton(
                     icon: Icon(
                       Icons.shopping_cart,
-                      color: Color(0xFF003049),
+                      color: Colors.green.shade800,
                     ),
                     onPressed: () {
                       Get.to(() => OrdersPage());
@@ -145,7 +145,7 @@ class _StoreState extends State<Store> {
                     Get.to(() => OrdersPage());
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF003049),
+                    backgroundColor: Colors.green.shade800,
                   ),
                   child: Text(
                     'View Orders',
@@ -227,13 +227,12 @@ class CategorySection extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            category,
-            style: TextStyle(
+          child: Text(category,
+              style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF003049)),
-          ),
+                color: Colors.green.shade800,
+              )),
         ),
         Container(
           height: 300, // Increased height for the container
@@ -338,7 +337,7 @@ class ItemCard extends StatelessWidget {
                 addToCart(item); // Call the addToCart function
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF003049),
+                backgroundColor: Colors.green.shade800,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),

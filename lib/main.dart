@@ -7,6 +7,7 @@ import 'package:membermanagementsystem/controllers/membershipcontroller.dart';
 import 'package:membermanagementsystem/pages/Login.dart';
 import 'package:membermanagementsystem/pages/blogs.dart';
 import 'package:membermanagementsystem/pages/events.dart';
+import 'package:membermanagementsystem/pages/forgotpassword.dart';
 import 'package:membermanagementsystem/pages/settings.dart';
 import 'package:membermanagementsystem/pages/signup.dart';
 import 'package:membermanagementsystem/pages/splashscreen.dart';
@@ -106,6 +107,9 @@ class _MemberManagementSystemState extends State<MemberManagementSystem> {
           home: Splashscreen(),
           onGenerateRoute: (settings) {
             switch (settings.name) {
+              case '/forgot-password':
+                return MaterialPageRoute(
+                    builder: (context) => ForgotPasswordPage());
               case '/Signup':
                 return MaterialPageRoute(builder: (context) => Signup());
               case '/Login':

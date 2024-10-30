@@ -59,7 +59,7 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF003049),
+        backgroundColor: Colors.green.shade800,
         title: Text(
           'Event Registration',
           style: TextStyle(
@@ -150,7 +150,7 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
                 child: ElevatedButton(
                   onPressed: eventController.registerUser,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF003049),
+                    backgroundColor: Colors.green.shade800,
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     textStyle: TextStyle(
                       fontSize: 18,

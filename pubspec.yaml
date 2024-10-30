@@ -49,6 +49,7 @@ dependencies:
   badges: ^3.1.2
   http_parser: ^4.0.2
   webview_flutter: ^4.10.0
+  animated_text_kit: ^4.2.2
 
 dev_dependencies:
   flutter_test:
@@ -58,7 +59,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "lib/images/iconimage.jpg"
+  image_path: "lib/images/LOGO.jpg"
   
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

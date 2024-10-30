@@ -91,7 +91,7 @@ class _NewsState extends State<News> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF003049),
+        backgroundColor: Colors.green.shade800,
         title: Text(
           "News",
           style: TextStyle(color: Colors.white),
@@ -183,31 +183,6 @@ class _NewsState extends State<News> {
   }
 }
 
-Future<bool> submitComment(String comment) async {
-  try {
-    final response = await http.post(
-      Uri.parse('your_api_endpoint'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer your_access_token',
-      },
-      body: jsonEncode({'comment': comment}),
-    );
-
-    if (response.statusCode == 200) {
-      print('Comment submitted: ${response.body}');
-      return true;
-    } else {
-      print('Failed to submit comment: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      return false;
-    }
-  } catch (e) {
-    print('Error submitting comment: $e');
-    return false;
-  }
-}
-
 class NewsPostWidget extends StatelessWidget {
   final String? name;
   final String? description;
@@ -296,7 +271,7 @@ class NewsPostWidget extends StatelessWidget {
                                 'Enter your comment',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF003049),
+                                  color: Colors.green.shade800,
                                 ),
                               ),
                               content: TextField(
@@ -329,46 +304,13 @@ class NewsPostWidget extends StatelessWidget {
                                         .pop(commentController.text);
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF003049),
+                                    backgroundColor: Colors.green.shade800,
                                   ),
                                 ),
                               ],
                             );
                           },
                         );
-
-                        if (comment!.isNotEmpty) {
-                          // Handle the comment here
-                          print('Comment: $comment');
-
-                          // Simulate API call to submit the comment
-                          bool isSuccess = await submitComment(comment);
-
-                          if (isSuccess) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content:
-                                    Text('Comment submitted successfully!'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Failed to submit comment.'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        } else {
-                          print('No comment entered');
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('No comment entered.'),
-                              backgroundColor: Colors.orange,
-                            ),
-                          );
-                        }
                       },
                     );
                   },
@@ -405,7 +347,7 @@ class NewsDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFFEFEFEF),
       appBar: AppBar(
-        backgroundColor: Color(0xFF003049),
+        backgroundColor: Colors.green.shade800,
         title: Text(
           title,
           style: TextStyle(color: Colors.white),
@@ -463,6 +405,7 @@ class NewsDetailPage extends StatelessWidget {
                     // Handle like action
                   },
                 ),
+                SizedBox(width: 20),
                 Builder(
                   builder: (BuildContext context) {
                     return IconButton(
@@ -478,7 +421,7 @@ class NewsDetailPage extends StatelessWidget {
                                 'Enter your comment',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF003049),
+                                  color: Colors.green.shade800,
                                 ),
                               ),
                               content: TextField(
@@ -511,46 +454,13 @@ class NewsDetailPage extends StatelessWidget {
                                         .pop(commentController.text);
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF003049),
+                                    backgroundColor: Colors.green.shade800,
                                   ),
                                 ),
                               ],
                             );
                           },
                         );
-
-                        if (comment!.isNotEmpty) {
-                          // Handle the comment here
-                          print('Comment: $comment');
-
-                          // Simulate API call to submit the comment
-                          bool isSuccess = await submitComment(comment);
-
-                          if (isSuccess) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content:
-                                    Text('Comment submitted successfully!'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Failed to submit comment.'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        } else {
-                          print('No comment entered');
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('No comment entered.'),
-                              backgroundColor: Colors.orange,
-                            ),
-                          );
-                        }
                       },
                     );
                   },

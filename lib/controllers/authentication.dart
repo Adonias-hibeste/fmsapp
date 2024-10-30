@@ -297,7 +297,9 @@ class AuthenticationController extends GetxController {
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.green,
           colorText: Colors.white,
+          duration: Duration(seconds: 1), // Set the duration here
         );
+
         Get.offAllNamed('/Blogs');
       } else {
         final responseBody = json.decode(response.body);

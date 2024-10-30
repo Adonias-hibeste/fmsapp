@@ -53,6 +53,7 @@ class UpdatePasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green.shade800,
         title: Text(
           'Update Password',
           style: TextStyle(color: Colors.white),
@@ -72,16 +73,41 @@ class UpdatePasswordPage extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
+            SizedBox(height: 20), // Space before input fields
             TextField(
               controller: currentPasswordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: 'Current Password'),
+              decoration: InputDecoration(
+                labelText: 'Current Password',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: BorderSide(color: Colors.green.shade800),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+                labelStyle: TextStyle(color: Colors.green.shade800),
+              ),
             ),
+            SizedBox(height: 16), // Space between fields
             TextField(
               controller: newPasswordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: 'New Password'),
+              decoration: InputDecoration(
+                labelText: 'New Password',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: BorderSide(color: Colors.green.shade800),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+                labelStyle: TextStyle(color: Colors.green.shade800),
+              ),
             ),
+            SizedBox(height: 20), // Space before the button
             ElevatedButton(
               onPressed: () {
                 final currentPassword = currentPasswordController.text;
@@ -95,9 +121,18 @@ class UpdatePasswordPage extends StatelessWidget {
                 } else {
                   updatePassword(currentPassword, newPassword);
                 }
-                Get.offAllNamed('/Login');
               },
-              child: Text('Update Password'),
+              child: Text(
+                'Update Password',
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green.shade800,
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+              ),
             ),
           ],
         ),
