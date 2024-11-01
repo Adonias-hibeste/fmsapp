@@ -42,7 +42,7 @@ class _BillingPageState extends State<BillingPage> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.206.97/api/user/membershipPayment/process'), // Correct route
+            'http://192.168.98.97/api/user/membershipPayment/process'), // Correct route
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',

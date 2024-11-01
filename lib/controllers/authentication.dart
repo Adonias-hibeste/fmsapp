@@ -174,6 +174,13 @@ class AuthenticationController extends GetxController {
     }
   }
 
+  Future<void> storeMembershipDetails(String name, double? price) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('membershipName', name);
+    await prefs.setString('membershipPrice',
+        price?.toString() ?? '0'); // Use '0' if price is null
+  }
+
   Future<void> storeUserData(Map<String, dynamic> userData) async {
     final prefs = await SharedPreferences.getInstance();
 

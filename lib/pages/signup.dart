@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:membermanagementsystem/controllers/authentication.dart';
 import 'package:membermanagementsystem/controllers/membershipcontroller.dart';
 import 'package:membermanagementsystem/models/membership.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Signup extends StatefulWidget {
   Signup({super.key});
@@ -44,6 +45,13 @@ class _SignupState extends State<Signup> {
       _formKey.currentState!.save();
       print('Complete Registration button pressed');
     }
+  }
+
+  Future<void> storeMembershipDetails(String name, double? price) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('membershipName', name);
+    await prefs.setString('membershipPrice',
+        price?.toString() ?? '0'); // Use '0' if price is null
   }
 
   Widget build(BuildContext context) {
@@ -428,10 +436,32 @@ class _SignupState extends State<Signup> {
                               ),
                               child: DropdownButtonFormField<String>(
                                 value: selectedMembership,
-                                onChanged: (String? newValue) {
+                                onChanged: (String? newValue) async {
                                   setState(() {
                                     authController1.updateMembership(newValue!);
                                   });
+
+                                  // Find the selected membership in the list
+                                  try {
+                                    Membership selectedMembership =
+                                        membershipController.memberships
+                                            .firstWhere(
+                                      (membership) =>
+                                          membership.id.toString() == newValue,
+                                    );
+
+                                    // Store the membership details if found
+                                    await storeMembershipDetails(
+                                        selectedMembership.name,
+                                        selectedMembership.price);
+                                  } catch (e) {
+                                    print("Selected membership not found: $e");
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              'Selected membership not found.')),
+                                    );
+                                  }
                                 },
                                 decoration: InputDecoration(
                                   labelText: 'Membership Type',

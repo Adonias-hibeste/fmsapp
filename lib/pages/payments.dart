@@ -34,27 +34,34 @@ class _PaymentFormPageState extends State<PaymentFormPage> {
           prefs.getString('userEmail') ?? 'unknown@example.com';
       userMembershipController.text =
           prefs.getString('membershipName') ?? 'N/A';
-      amountController.text = prefs.getString('membershipPrice') ??
-          '0.0'; // Default to 0.0 if not found
+      amountController.text = prefs.getString('membershipPrice') ?? '0.0';
     });
   }
 
   Future<void> initiatePayment() async {
     final prefs = await SharedPreferences.getInstance();
-    final userId =
-        prefs.getInt('userId'); // Retrieve user_id from shared preferences
+    final userId = prefs.getInt('userId');
+
+    if (userId == null || amountController.text == '0.0') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'User ID or amount is missing. Please check membership selection.')),
+      );
+      return;
+    }
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.206.97/api/user/membershipPayment/process'),
+        Uri.parse('http://192.168.98.97/api/user/membershipPayment/process'),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: {
-          'user_id': userId.toString(), // Pass the user_id as a string
+          'user_id': userId.toString(),
           'amount': amountController.text,
-          'name': userNameController.text, // Send the name
+          'name': userNameController.text,
           'email': userEmailController.text,
         },
       );
@@ -65,8 +72,7 @@ class _PaymentFormPageState extends State<PaymentFormPage> {
           setState(() {
             paymentUrl = responseData['data']['checkout_url'];
             isLoading = false;
-            _controller
-                .loadRequest(Uri.parse(paymentUrl)); // Load the payment URL
+            _controller.loadRequest(Uri.parse(paymentUrl));
           });
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
