@@ -53,7 +53,21 @@ This project is a **Football Club Member Management System**, designed to stream
    git clone https://github.com/yourusername/football-club-management.git
    cd football-club-management
 
+## Install Dependencies
 
+After navigating into the project folder, run the following command to install all required dependencies:
+
+```bash
+flutter pub get
+```
+## Run the App
+
+Connect a physical device or start an emulator, then run:
+
+```bash
+flutter run
+```
+This command will compile the app and run it on the connected device or emulator.
    
 ## 📘 Usage
 
