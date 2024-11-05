@@ -40,6 +40,20 @@ This project is a **Football Club Member Management System**, designed to stream
 
 ---
 
+## Screenshots
+
+Here are some screenshots that showcase different parts of the app interface. Scroll sideways to view all:
+
+<div style="display: flex; overflow-x: auto;">
+    <img src="https://github.com/Adonias-hibeste/fmsapp/blob/main/photo_2024-11-05_03-18-14.jpg" width="300" />
+    <img src="https://github.com/Adonias-hibeste/fmsapp/blob/main/photo_2024-11-05_03-18-15%20(2).jpg" width="300" />
+    <img src="https://github.com/Adonias-hibeste/fmsapp/blob/main/photo_2024-11-05_03-18-15%20(3).jpg" width="300" />
+    <img src="https://github.com/Adonias-hibeste/fmsapp/blob/main/photo_2024-11-05_03-18-15.jpg" width="300" />
+    <img src="https://github.com/Adonias-hibeste/fmsapp/blob/main/photo_2024-11-05_03-18-16%20(2).jpg" width="300" />
+    <img src="https://github.com/Adonias-hibeste/fmsapp/blob/main/photo_2024-11-05_03-18-16.jpg" width="300" />
+   
+</div>
+
 ## 🚀 Installation
 
 ### Prerequisites
